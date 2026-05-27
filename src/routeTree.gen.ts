@@ -9,38 +9,116 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdotarRouteImport } from './routes/adotar'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnimaisIndexRouteImport } from './routes/animais/index'
+import { Route as AnimaisIdRouteImport } from './routes/animais/$id'
 
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdotarRoute = AdotarRouteImport.update({
+  id: '/adotar',
+  path: '/adotar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnimaisIndexRoute = AnimaisIndexRouteImport.update({
+  id: '/animais/',
+  path: '/animais/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnimaisIdRoute = AnimaisIdRouteImport.update({
+  id: '/animais/$id',
+  path: '/animais/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/adotar': typeof AdotarRoute
+  '/auth': typeof AuthRoute
+  '/sobre': typeof SobreRoute
+  '/animais/$id': typeof AnimaisIdRoute
+  '/animais/': typeof AnimaisIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/adotar': typeof AdotarRoute
+  '/auth': typeof AuthRoute
+  '/sobre': typeof SobreRoute
+  '/animais/$id': typeof AnimaisIdRoute
+  '/animais': typeof AnimaisIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/adotar': typeof AdotarRoute
+  '/auth': typeof AuthRoute
+  '/sobre': typeof SobreRoute
+  '/animais/$id': typeof AnimaisIdRoute
+  '/animais/': typeof AnimaisIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/adotar' | '/auth' | '/sobre' | '/animais/$id' | '/animais/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/adotar' | '/auth' | '/sobre' | '/animais/$id' | '/animais'
+  id:
+    | '__root__'
+    | '/'
+    | '/adotar'
+    | '/auth'
+    | '/sobre'
+    | '/animais/$id'
+    | '/animais/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdotarRoute: typeof AdotarRoute
+  AuthRoute: typeof AuthRoute
+  SobreRoute: typeof SobreRoute
+  AnimaisIdRoute: typeof AnimaisIdRoute
+  AnimaisIndexRoute: typeof AnimaisIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/adotar': {
+      id: '/adotar'
+      path: '/adotar'
+      fullPath: '/adotar'
+      preLoaderRoute: typeof AdotarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,12 +126,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/animais/': {
+      id: '/animais/'
+      path: '/animais'
+      fullPath: '/animais/'
+      preLoaderRoute: typeof AnimaisIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/animais/$id': {
+      id: '/animais/$id'
+      path: '/animais/$id'
+      fullPath: '/animais/$id'
+      preLoaderRoute: typeof AnimaisIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdotarRoute: AdotarRoute,
+  AuthRoute: AuthRoute,
+  SobreRoute: SobreRoute,
+  AnimaisIdRoute: AnimaisIdRoute,
+  AnimaisIndexRoute: AnimaisIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
