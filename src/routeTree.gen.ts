@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdotarRouteImport } from './routes/adotar'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnimaisIndexRouteImport } from './routes/animais/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AnimaisIdRouteImport } from './routes/animais/$id'
 
 const SobreRoute = SobreRouteImport.update({
@@ -41,6 +42,11 @@ const AnimaisIndexRoute = AnimaisIndexRouteImport.update({
   path: '/animais/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnimaisIdRoute = AnimaisIdRouteImport.update({
   id: '/animais/$id',
   path: '/animais/$id',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/sobre': typeof SobreRoute
   '/animais/$id': typeof AnimaisIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/animais/': typeof AnimaisIndexRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/sobre': typeof SobreRoute
   '/animais/$id': typeof AnimaisIdRoute
+  '/admin': typeof AdminIndexRoute
   '/animais': typeof AnimaisIndexRoute
 }
 export interface FileRoutesById {
@@ -70,13 +78,28 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/sobre': typeof SobreRoute
   '/animais/$id': typeof AnimaisIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/animais/': typeof AnimaisIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/adotar' | '/auth' | '/sobre' | '/animais/$id' | '/animais/'
+  fullPaths:
+    | '/'
+    | '/adotar'
+    | '/auth'
+    | '/sobre'
+    | '/animais/$id'
+    | '/admin/'
+    | '/animais/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/adotar' | '/auth' | '/sobre' | '/animais/$id' | '/animais'
+  to:
+    | '/'
+    | '/adotar'
+    | '/auth'
+    | '/sobre'
+    | '/animais/$id'
+    | '/admin'
+    | '/animais'
   id:
     | '__root__'
     | '/'
@@ -84,6 +107,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/sobre'
     | '/animais/$id'
+    | '/admin/'
     | '/animais/'
   fileRoutesById: FileRoutesById
 }
@@ -93,6 +117,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   SobreRoute: typeof SobreRoute
   AnimaisIdRoute: typeof AnimaisIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   AnimaisIndexRoute: typeof AnimaisIndexRoute
 }
 
@@ -133,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnimaisIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/animais/$id': {
       id: '/animais/$id'
       path: '/animais/$id'
@@ -149,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   SobreRoute: SobreRoute,
   AnimaisIdRoute: AnimaisIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
   AnimaisIndexRoute: AnimaisIndexRoute,
 }
 export const routeTree = rootRouteImport
