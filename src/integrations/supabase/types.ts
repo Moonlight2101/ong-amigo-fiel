@@ -14,16 +14,149 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      adoption_requests: {
+        Row: {
+          address: string
+          age: number
+          agree_responsibility: boolean
+          animal_id: string | null
+          created_at: string
+          email: string
+          full_name: string
+          has_children: boolean
+          has_other_pets: boolean
+          has_yard: boolean
+          housing_type: string
+          id: string
+          phone: string
+          profession: string | null
+          reason: string
+          status: string
+        }
+        Insert: {
+          address: string
+          age: number
+          agree_responsibility?: boolean
+          animal_id?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          has_children?: boolean
+          has_other_pets?: boolean
+          has_yard?: boolean
+          housing_type: string
+          id?: string
+          phone: string
+          profession?: string | null
+          reason: string
+          status?: string
+        }
+        Update: {
+          address?: string
+          age?: number
+          agree_responsibility?: boolean
+          animal_id?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          has_children?: boolean
+          has_other_pets?: boolean
+          has_yard?: boolean
+          housing_type?: string
+          id?: string
+          phone?: string
+          profession?: string | null
+          reason?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "adoption_requests_animal_id_fkey"
+            columns: ["animal_id"]
+            isOneToOne: false
+            referencedRelation: "animals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animals: {
+        Row: {
+          age_years: number
+          breed: string | null
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          name: string
+          sex: string
+          size: string
+          species: string
+          status: string
+        }
+        Insert: {
+          age_years?: number
+          breed?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          sex: string
+          size: string
+          species: string
+          status?: string
+        }
+        Update: {
+          age_years?: number
+          breed?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          sex?: string
+          size?: string
+          species?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +283,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
