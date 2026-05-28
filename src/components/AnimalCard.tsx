@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { PawPrint } from "lucide-react";
+import { PawPrint, ArrowUpRight } from "lucide-react";
 
 export type Animal = {
   id: string;
@@ -22,40 +22,56 @@ const statusLabel: Record<string, string> = {
   em_processo: "Em processo",
   adotado: "Adotado",
 };
+const speciesLabel: Record<string, string> = {
+  cachorro: "Cão",
+  gato: "Gato",
+  outro: "Outro",
+};
 
 export function AnimalCard({ animal }: { animal: Animal }) {
   return (
-    <Link to="/animais/$id" params={{ id: animal.id }} className="group">
-      <Card className="overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow border-border/60">
-        <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+    <Link to="/animais/$id" params={{ id: animal.id }} className="group block">
+      <Card className="overflow-hidden h-full flex flex-col border-border/70 bg-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-1 rounded-2xl p-0">
+        <div className="aspect-[4/5] bg-muted relative overflow-hidden">
           {animal.image_url ? (
             <img
               src={animal.image_url}
               alt={animal.name}
               loading="lazy"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1200ms] ease-out"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-muted-foreground">
               <PawPrint className="h-12 w-12" />
             </div>
           )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/0 to-black/0" />
           <Badge
-            variant={animal.status === "disponivel" ? "default" : "secondary"}
-            className="absolute top-3 right-3"
+            className="absolute top-4 left-4 bg-background/90 text-foreground border-0 backdrop-blur"
           >
-            {statusLabel[animal.status]}
+            {speciesLabel[animal.species] ?? animal.species}
           </Badge>
+          <span className="absolute top-4 right-4 text-[10px] uppercase tracking-[0.18em] px-2.5 py-1 rounded-full bg-gold/90 text-primary-foreground font-medium">
+            {statusLabel[animal.status]}
+          </span>
+          <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <h3 className="font-display text-2xl leading-tight">{animal.name}</h3>
+                <p className="text-xs opacity-85 mt-0.5">
+                  {animal.breed || "SRD"} · {animal.age_years === 0 ? "Filhote" : `${animal.age_years} ${animal.age_years > 1 ? "anos" : "ano"}`}
+                </p>
+              </div>
+              <span className="h-9 w-9 rounded-full bg-white/15 backdrop-blur flex items-center justify-center group-hover:bg-gold group-hover:text-primary-foreground transition-colors">
+                <ArrowUpRight className="h-4 w-4" />
+              </span>
+            </div>
+          </div>
         </div>
-        <div className="p-4 flex flex-col gap-1">
-          <h3 className="font-semibold text-lg">{animal.name}</h3>
-          <p className="text-sm text-muted-foreground">
-            {animal.breed || (animal.species === "cachorro" ? "SRD" : "Sem raça definida")} ·{" "}
-            {animal.age_years === 0 ? "Filhote" : `${animal.age_years} ano${animal.age_years > 1 ? "s" : ""}`}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            Porte {sizeLabel[animal.size]} · {animal.sex === "macho" ? "Macho" : "Fêmea"}
-          </p>
+        <div className="px-5 py-3.5 flex items-center justify-between text-xs text-muted-foreground">
+          <span>Porte {sizeLabel[animal.size]}</span>
+          <span className="h-1 w-1 rounded-full bg-border" />
+          <span>{animal.sex === "macho" ? "Macho" : "Fêmea"}</span>
         </div>
       </Card>
     </Link>

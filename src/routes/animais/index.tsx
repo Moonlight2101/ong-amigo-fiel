@@ -31,10 +31,13 @@ function Page() {
 
   return (
     <Layout>
-      <section className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold">Nossos animais</h1>
-        <p className="text-muted-foreground mt-2 max-w-2xl">
-          Conheça os animais resgatados disponíveis para adoção. Use os filtros para encontrar seu novo companheiro.
+      <section className="container mx-auto px-6 py-16">
+        <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-gold mb-4">
+          <span className="h-px w-8 bg-gold" /> Adoção responsável
+        </span>
+        <h1 className="font-display text-5xl md:text-6xl tracking-tight text-balance max-w-3xl">Encontre seu novo melhor amigo</h1>
+        <p className="text-muted-foreground mt-4 max-w-2xl text-lg">
+          Conheça os animais resgatados disponíveis para adoção. Use os filtros para encontrar quem combina com você.
         </p>
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-secondary/40 rounded-xl">

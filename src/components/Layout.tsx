@@ -18,25 +18,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="border-b bg-background/80 backdrop-blur sticky top-0 z-40">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-semibold text-lg">
-            <PawPrint className="h-6 w-6 text-primary" />
+      <header className="border-b border-border/60 bg-background/75 backdrop-blur-xl sticky top-0 z-40">
+        <div className="container mx-auto px-6 h-18 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2.5 font-display text-xl tracking-tight">
+            <span className="h-9 w-9 rounded-full gradient-primary flex items-center justify-center shadow-soft">
+              <PawPrint className="h-4 w-4 text-primary-foreground" />
+            </span>
             <span>Amigo Fiel</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-8">
             {links.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors relative"
                 activeProps={{ className: "text-foreground font-medium" }}
               >
                 {l.label}
               </Link>
             ))}
             {isAdmin && (
-              <Link to="/admin" className="text-sm text-primary font-medium">
+              <Link to="/admin" className="text-sm text-gold font-medium">
                 Painel
               </Link>
             )}
@@ -46,10 +48,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </Button>
             ) : (
               <Link to="/auth">
-                <Button variant="outline" size="sm">Entrar</Button>
+                <Button size="sm" className="rounded-full px-5 gradient-primary text-primary-foreground">Entrar</Button>
               </Link>
             )}
           </nav>
+
+
           <button className="md:hidden p-2" onClick={() => setOpen(!open)} aria-label="Menu">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -75,19 +79,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t mt-16 py-8 bg-secondary/40">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <PawPrint className="h-4 w-4 text-primary" />
-            <span>ONG Amigo Fiel © {new Date().getFullYear()}</span>
+      <footer className="mt-20 border-t border-border/60 bg-secondary/30">
+        <div className="container mx-auto px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2.5">
+            <span className="h-7 w-7 rounded-full gradient-primary flex items-center justify-center">
+              <PawPrint className="h-3.5 w-3.5 text-primary-foreground" />
+            </span>
+            <span className="font-display text-foreground">Amigo Fiel</span>
+            <span className="text-xs">© {new Date().getFullYear()}</span>
           </div>
-          <div className="flex gap-6">
-            <Link to="/sobre" className="hover:text-foreground">Sobre</Link>
-            <Link to="/animais" className="hover:text-foreground">Animais</Link>
-            <Link to="/adotar" className="hover:text-foreground">Adotar</Link>
+          <div className="flex gap-7 text-xs uppercase tracking-wider">
+            <Link to="/sobre" className="hover:text-gold transition-colors">Sobre</Link>
+            <Link to="/animais" className="hover:text-gold transition-colors">Animais</Link>
+            <Link to="/adotar" className="hover:text-gold transition-colors">Adotar</Link>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
