@@ -86,19 +86,10 @@ function Index() {
           <div className="md:col-span-5 relative animate-fade-up">
             <div className="absolute -inset-4 gradient-gold opacity-20 blur-3xl rounded-full" />
             <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-elegant border border-gold/20">
-              <img src={hero} alt="Animal resgatado pela ONG Amigo Fiel" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
-              <div className="absolute bottom-5 left-5 right-5 bg-background/95 backdrop-blur rounded-2xl p-4 flex items-center gap-3">
-                <span className="h-10 w-10 rounded-full gradient-gold flex items-center justify-center">
-                  <PawPrint className="h-5 w-5 text-primary-foreground" />
-                </span>
-                <div className="text-sm">
-                  <p className="font-medium leading-tight">Adoção responsável</p>
-                  <p className="text-xs text-muted-foreground">Acompanhamos cada novo lar</p>
-                </div>
-              </div>
+              <img src={hero} alt="Animais resgatados pela ONG Amigo Fiel" className="w-full h-full object-cover" />
             </div>
           </div>
+
         </div>
       </section>
 
