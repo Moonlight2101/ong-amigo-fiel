@@ -88,9 +88,8 @@ function Index() {
             <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-elegant border border-gold/20">
               <img src={hero} alt="Animais resgatados pela ONG Amigo Fiel" className="w-full h-full object-cover" />
             </div>
-
-            </div>
           </div>
+
         </div>
       </section>
 
