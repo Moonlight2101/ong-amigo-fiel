@@ -31,7 +31,6 @@ function Page() {
 
   return (
     <Layout>
-      <section className="container mx-auto px-4 py-12">
       <section className="container mx-auto px-6 py-16">
         <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-gold mb-4">
           <span className="h-px w-8 bg-gold" /> Adoção responsável
