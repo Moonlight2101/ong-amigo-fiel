@@ -53,16 +53,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             )}
           </nav>
 
-            {user ? (
-              <Button variant="ghost" size="sm" onClick={() => supabase.auth.signOut()}>
-                Sair
-              </Button>
-            ) : (
-              <Link to="/auth">
-                <Button variant="outline" size="sm">Entrar</Button>
-              </Link>
-            )}
-          </nav>
+
           <button className="md:hidden p-2" onClick={() => setOpen(!open)} aria-label="Menu">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
