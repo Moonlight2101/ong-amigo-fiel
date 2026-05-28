@@ -18,28 +18,41 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="border-b bg-background/80 backdrop-blur sticky top-0 z-40">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-semibold text-lg">
-            <PawPrint className="h-6 w-6 text-primary" />
+      <header className="border-b border-border/60 bg-background/75 backdrop-blur-xl sticky top-0 z-40">
+        <div className="container mx-auto px-6 h-18 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2.5 font-display text-xl tracking-tight">
+            <span className="h-9 w-9 rounded-full gradient-primary flex items-center justify-center shadow-soft">
+              <PawPrint className="h-4 w-4 text-primary-foreground" />
+            </span>
             <span>Amigo Fiel</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-8">
             {links.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors relative"
                 activeProps={{ className: "text-foreground font-medium" }}
               >
                 {l.label}
               </Link>
             ))}
             {isAdmin && (
-              <Link to="/admin" className="text-sm text-primary font-medium">
+              <Link to="/admin" className="text-sm text-gold font-medium">
                 Painel
               </Link>
             )}
+            {user ? (
+              <Button variant="ghost" size="sm" onClick={() => supabase.auth.signOut()}>
+                Sair
+              </Button>
+            ) : (
+              <Link to="/auth">
+                <Button size="sm" className="rounded-full px-5 gradient-primary text-primary-foreground">Entrar</Button>
+              </Link>
+            )}
+          </nav>
+
             {user ? (
               <Button variant="ghost" size="sm" onClick={() => supabase.auth.signOut()}>
                 Sair
