@@ -78,7 +78,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </header>
 
       <main className="flex-1">{children}</main>
-      <main className="flex-1">{children}</main>
 
       <footer className="mt-20 border-t border-border/60 bg-secondary/30">
         <div className="container mx-auto px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
@@ -93,8 +92,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/sobre" className="hover:text-gold transition-colors">Sobre</Link>
             <Link to="/animais" className="hover:text-gold transition-colors">Animais</Link>
             <Link to="/adotar" className="hover:text-gold transition-colors">Adotar</Link>
-
+          </div>
+        </div>
       </footer>
+
     </div>
   );
 }
