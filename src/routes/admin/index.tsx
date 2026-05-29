@@ -253,6 +253,7 @@ function AnimalsAdmin() {
         })}
         {animals.length === 0 && <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-xl">Nenhum animal cadastrado ainda.</div>}
       </div>
+    </div>
   );
 }
 
