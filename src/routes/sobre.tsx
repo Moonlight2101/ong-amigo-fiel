@@ -41,10 +41,6 @@ function Page() {
           <li>Divulgando nossos animais nas redes sociais.</li>
         </ul>
 
-        <div className="mt-12 border-t pt-8 text-sm text-muted-foreground">
-          <p><strong>Contato:</strong> contato@amigofiel.org.br</p>
-          <p><strong>Endereço:</strong> Rua dos Animais, 123 — Centro</p>
-        </div>
       </section>
     </Layout>
   );
