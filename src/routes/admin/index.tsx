@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Trash2, Pencil, Plus } from "lucide-react";
+import { Trash2, Pencil, Plus, CheckCircle2, Clock, XCircle, PawPrint, Inbox } from "lucide-react";
 import type { Animal } from "@/components/AnimalCard";
 
 export const Route = createFileRoute("/admin/")({
@@ -49,16 +49,27 @@ function Page() {
   return (
     <Layout>
       <section className="container mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold">Painel administrativo</h1>
-        <p className="text-muted-foreground mt-1">Gerencie animais e pedidos de adoção.</p>
+        <div className="flex items-center gap-3">
+          <span className="h-10 w-10 rounded-full gradient-primary flex items-center justify-center shadow-soft">
+            <PawPrint className="h-4 w-4 text-primary-foreground" />
+          </span>
+          <div>
+            <h1 className="font-display text-3xl tracking-tight">Painel administrativo</h1>
+            <p className="text-sm text-muted-foreground">Gerencie animais e acompanhe pedidos de adoção em tempo real.</p>
+          </div>
+        </div>
 
-        <Tabs defaultValue="animals" className="mt-8">
-          <TabsList>
-            <TabsTrigger value="animals">Animais</TabsTrigger>
-            <TabsTrigger value="requests">Pedidos de adoção</TabsTrigger>
+        <Tabs defaultValue="requests" className="mt-8">
+          <TabsList className="bg-secondary">
+            <TabsTrigger value="requests" className="data-[state=active]:bg-foreground data-[state=active]:text-background">
+              <Inbox className="h-4 w-4 mr-2" />Pedidos de adoção
+            </TabsTrigger>
+            <TabsTrigger value="animals" className="data-[state=active]:bg-foreground data-[state=active]:text-background">
+              <PawPrint className="h-4 w-4 mr-2" />Animais
+            </TabsTrigger>
           </TabsList>
-          <TabsContent value="animals" className="mt-6"><AnimalsAdmin /></TabsContent>
           <TabsContent value="requests" className="mt-6"><RequestsAdmin /></TabsContent>
+          <TabsContent value="animals" className="mt-6"><AnimalsAdmin /></TabsContent>
         </Tabs>
       </section>
     </Layout>
@@ -112,20 +123,41 @@ function AnimalsAdmin() {
     if (error) return toast.error(error.message);
     toast.success("Removido");
     load();
+  async function quickStatus(a: Animal, status: string) {
+    const { error } = await supabase.from("animals").update({ status }).eq("id", a.id);
+    if (error) return toast.error(error.message);
+    toast.success(`${a.name} marcado como ${status.replace("_", " ")}`);
+    load();
   }
+
+  const counts = {
+    total: animals.length,
+    disponivel: animals.filter(a => a.status === "disponivel").length,
+    processo: animals.filter(a => a.status === "em_processo").length,
+    adotado: animals.filter(a => a.status === "adotado").length,
+  };
 
   return (
     <div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        {[
+          { l: "Total", v: counts.total, c: "text-foreground" },
+          { l: "Disponíveis", v: counts.disponivel, c: "text-gold" },
+          { l: "Em processo", v: counts.processo, c: "text-foreground/70" },
+          { l: "Adotados", v: counts.adotado, c: "text-muted-foreground" },
+        ].map(s => (
+          <div key={s.l} className="border rounded-xl p-4 bg-card">
+            <div className={`font-display text-3xl ${s.c}`}>{s.v}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{s.l}</div>
+          </div>
+        ))}
+      </div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-semibold">{animals.length} animal(is) cadastrado(s)</h2>
+        <h2 className="font-display text-xl">Animais cadastrados</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openNew}><Plus className="h-4 w-4 mr-1" />Novo animal</Button>
+            <Button onClick={openNew} className="gradient-primary text-primary-foreground rounded-full"><Plus className="h-4 w-4 mr-1" />Novo animal</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-            <DialogHeader><DialogTitle>{editing ? "Editar" : "Novo"} animal</DialogTitle></DialogHeader>
-            <form onSubmit={save} className="space-y-3">
-              <div><Label>Nome *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label>Espécie</Label>
