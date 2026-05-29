@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Trash2, Pencil, Plus } from "lucide-react";
+import { Trash2, Pencil, Plus, CheckCircle2, Clock, XCircle, PawPrint, Inbox } from "lucide-react";
 import type { Animal } from "@/components/AnimalCard";
 
 export const Route = createFileRoute("/admin/")({
@@ -49,16 +49,27 @@ function Page() {
   return (
     <Layout>
       <section className="container mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold">Painel administrativo</h1>
-        <p className="text-muted-foreground mt-1">Gerencie animais e pedidos de adoção.</p>
+        <div className="flex items-center gap-3">
+          <span className="h-10 w-10 rounded-full gradient-primary flex items-center justify-center shadow-soft">
+            <PawPrint className="h-4 w-4 text-primary-foreground" />
+          </span>
+          <div>
+            <h1 className="font-display text-3xl tracking-tight">Painel administrativo</h1>
+            <p className="text-sm text-muted-foreground">Gerencie animais e acompanhe pedidos de adoção em tempo real.</p>
+          </div>
+        </div>
 
-        <Tabs defaultValue="animals" className="mt-8">
-          <TabsList>
-            <TabsTrigger value="animals">Animais</TabsTrigger>
-            <TabsTrigger value="requests">Pedidos de adoção</TabsTrigger>
+        <Tabs defaultValue="requests" className="mt-8">
+          <TabsList className="bg-secondary">
+            <TabsTrigger value="requests" className="data-[state=active]:bg-foreground data-[state=active]:text-background">
+              <Inbox className="h-4 w-4 mr-2" />Pedidos de adoção
+            </TabsTrigger>
+            <TabsTrigger value="animals" className="data-[state=active]:bg-foreground data-[state=active]:text-background">
+              <PawPrint className="h-4 w-4 mr-2" />Animais
+            </TabsTrigger>
           </TabsList>
-          <TabsContent value="animals" className="mt-6"><AnimalsAdmin /></TabsContent>
           <TabsContent value="requests" className="mt-6"><RequestsAdmin /></TabsContent>
+          <TabsContent value="animals" className="mt-6"><AnimalsAdmin /></TabsContent>
         </Tabs>
       </section>
     </Layout>
@@ -114,16 +125,43 @@ function AnimalsAdmin() {
     load();
   }
 
+  async function quickStatus(a: Animal, status: string) {
+    const { error } = await supabase.from("animals").update({ status }).eq("id", a.id);
+    if (error) return toast.error(error.message);
+    toast.success(`${a.name} marcado como ${status.replace("_", " ")}`);
+    load();
+  }
+
+  const counts = {
+    total: animals.length,
+    disponivel: animals.filter(a => a.status === "disponivel").length,
+    processo: animals.filter(a => a.status === "em_processo").length,
+    adotado: animals.filter(a => a.status === "adotado").length,
+  };
+
   return (
     <div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        {[
+          { l: "Total", v: counts.total, c: "text-foreground" },
+          { l: "Disponíveis", v: counts.disponivel, c: "text-gold" },
+          { l: "Em processo", v: counts.processo, c: "text-foreground/70" },
+          { l: "Adotados", v: counts.adotado, c: "text-muted-foreground" },
+        ].map(s => (
+          <div key={s.l} className="border rounded-xl p-4 bg-card">
+            <div className={`font-display text-3xl ${s.c}`}>{s.v}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{s.l}</div>
+          </div>
+        ))}
+      </div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-semibold">{animals.length} animal(is) cadastrado(s)</h2>
+        <h2 className="font-display text-xl">Animais cadastrados</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openNew}><Plus className="h-4 w-4 mr-1" />Novo animal</Button>
+            <Button onClick={openNew} className="gradient-primary text-primary-foreground rounded-full"><Plus className="h-4 w-4 mr-1" />Novo animal</Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-            <DialogHeader><DialogTitle>{editing ? "Editar" : "Novo"} animal</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle className="font-display">{editing ? "Editar" : "Novo"} animal</DialogTitle></DialogHeader>
             <form onSubmit={save} className="space-y-3">
               <div><Label>Nome *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
               <div className="grid grid-cols-2 gap-3">
@@ -182,20 +220,37 @@ function AnimalsAdmin() {
       </div>
 
       <div className="grid gap-3">
-        {animals.map((a) => (
-          <div key={a.id} className="border rounded-lg p-4 flex items-center gap-4 bg-card">
-            <div className="w-16 h-16 rounded bg-muted overflow-hidden shrink-0">
-              {a.image_url && <img src={a.image_url} alt={a.name} className="w-full h-full object-cover" />}
+        {animals.map((a) => {
+          const statusLabel: Record<string, string> = { disponivel: "Disponível", em_processo: "Em processo", adotado: "Adotado" };
+          const statusIcon: Record<string, any> = { disponivel: CheckCircle2, em_processo: Clock, adotado: XCircle };
+          const StatusIcon = statusIcon[a.status] || CheckCircle2;
+          const nextStatus = a.status === "disponivel" ? "adotado" : "disponivel";
+          return (
+            <div key={a.id} className="group border rounded-xl p-4 flex items-center gap-4 bg-card hover:shadow-elegant transition-all">
+              <div className="w-16 h-16 rounded-lg bg-muted overflow-hidden shrink-0 border">
+                {a.image_url && <img src={a.image_url} alt={a.name} className="w-full h-full object-cover" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-display text-lg">{a.name}</div>
+                <div className="text-xs text-muted-foreground capitalize">{a.species} · {a.size} · {a.sex} · {a.age_years} {a.age_years === 1 ? "ano" : "anos"}</div>
+              </div>
+              <Badge
+                className={
+                  a.status === "disponivel" ? "bg-gold text-foreground border-0" :
+                  a.status === "em_processo" ? "bg-secondary text-foreground border" :
+                  "bg-muted text-muted-foreground border"
+                }
+              >
+                <StatusIcon className="h-3 w-3 mr-1" />{statusLabel[a.status] || a.status}
+              </Badge>
+              <Button size="sm" variant="outline" onClick={() => quickStatus(a, nextStatus)} title="Alternar disponibilidade">
+                {a.status === "disponivel" ? "Marcar adotado" : "Marcar disponível"}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => openEdit(a)} title="Editar"><Pencil className="h-4 w-4" /></Button>
+              <Button size="sm" variant="ghost" onClick={() => remove(a.id)} title="Excluir"><Trash2 className="h-4 w-4 text-destructive" /></Button>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-medium">{a.name}</div>
-              <div className="text-xs text-muted-foreground capitalize">{a.species} · {a.size} · {a.sex}</div>
-            </div>
-            <Badge variant={a.status === "disponivel" ? "default" : "secondary"}>{a.status}</Badge>
-            <Button size="sm" variant="ghost" onClick={() => openEdit(a)}><Pencil className="h-4 w-4" /></Button>
-            <Button size="sm" variant="ghost" onClick={() => remove(a.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-          </div>
-        ))}
+          );
+        })}
         {animals.length === 0 && <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-xl">Nenhum animal cadastrado ainda.</div>}
       </div>
     </div>
@@ -227,12 +282,43 @@ function RequestsAdmin() {
     setSelected(null);
   }
 
+  const counts = {
+    total: reqs.length,
+    pendente: reqs.filter(r => r.status === "pendente").length,
+    aprovado: reqs.filter(r => r.status === "aprovado").length,
+    recusado: reqs.filter(r => r.status === "recusado").length,
+  };
+
+  const [filter, setFilter] = useState<string>("todos");
+  const visible = filter === "todos" ? reqs : reqs.filter(r => r.status === filter);
+
   return (
     <div>
-      <h2 className="font-semibold mb-4">{reqs.length} pedido(s) recebido(s)</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        {[
+          { l: "Total", v: counts.total, k: "todos", c: "text-foreground" },
+          { l: "Pendentes", v: counts.pendente, k: "pendente", c: "text-gold" },
+          { l: "Aprovados", v: counts.aprovado, k: "aprovado", c: "text-foreground/80" },
+          { l: "Recusados", v: counts.recusado, k: "recusado", c: "text-muted-foreground" },
+        ].map(s => (
+          <button
+            key={s.l}
+            onClick={() => setFilter(s.k)}
+            className={`text-left border rounded-xl p-4 bg-card transition-all hover:shadow-elegant ${filter === s.k ? "border-gold ring-1 ring-gold" : ""}`}
+          >
+            <div className={`font-display text-3xl ${s.c}`}>{s.v}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{s.l}</div>
+          </button>
+        ))}
+      </div>
+
+      <h2 className="font-display text-xl mb-4">Pedidos {filter !== "todos" && `· ${filter}`}</h2>
       <div className="grid gap-3">
-        {reqs.map((r) => (
-          <button key={r.id} onClick={() => setSelected(r)} className="border rounded-lg p-4 flex items-center gap-4 bg-card text-left hover:bg-accent/30">
+        {visible.map((r) => (
+          <button key={r.id} onClick={() => setSelected(r)} className="border rounded-xl p-4 flex items-center gap-4 bg-card text-left hover:shadow-elegant hover:border-gold/50 transition-all">
+            <div className="h-10 w-10 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-display shrink-0">
+              {r.full_name.charAt(0).toUpperCase()}
+            </div>
             <div className="flex-1 min-w-0">
               <div className="font-medium">{r.full_name}</div>
               <div className="text-xs text-muted-foreground truncate">{r.email} · {r.phone}</div>
@@ -240,12 +326,18 @@ function RequestsAdmin() {
             <div className="text-xs text-muted-foreground hidden md:block">
               {new Date(r.created_at).toLocaleDateString("pt-BR")}
             </div>
-            <Badge variant={r.status === "pendente" ? "default" : r.status === "aprovado" ? "secondary" : "destructive"}>
+            <Badge
+              className={
+                r.status === "pendente" ? "bg-gold text-foreground border-0" :
+                r.status === "aprovado" ? "bg-foreground text-background border-0" :
+                "bg-muted text-muted-foreground border"
+              }
+            >
               {r.status}
             </Badge>
           </button>
         ))}
-        {reqs.length === 0 && <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-xl">Nenhum pedido ainda.</div>}
+        {visible.length === 0 && <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-xl">Nenhum pedido {filter !== "todos" && `${filter}`} ainda.</div>}
       </div>
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
