@@ -160,6 +160,10 @@ function AnimalsAdmin() {
           <DialogTrigger asChild>
             <Button onClick={openNew} className="gradient-primary text-primary-foreground rounded-full"><Plus className="h-4 w-4 mr-1" />Novo animal</Button>
           </DialogTrigger>
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogHeader><DialogTitle className="font-display">{editing ? "Editar" : "Novo"} animal</DialogTitle></DialogHeader>
+            <form onSubmit={save} className="space-y-3">
+              <div><Label>Nome *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label>Espécie</Label>
@@ -216,23 +220,39 @@ function AnimalsAdmin() {
       </div>
 
       <div className="grid gap-3">
-        {animals.map((a) => (
-          <div key={a.id} className="border rounded-lg p-4 flex items-center gap-4 bg-card">
-            <div className="w-16 h-16 rounded bg-muted overflow-hidden shrink-0">
-              {a.image_url && <img src={a.image_url} alt={a.name} className="w-full h-full object-cover" />}
+        {animals.map((a) => {
+          const statusLabel: Record<string, string> = { disponivel: "Disponível", em_processo: "Em processo", adotado: "Adotado" };
+          const statusIcon: Record<string, any> = { disponivel: CheckCircle2, em_processo: Clock, adotado: XCircle };
+          const StatusIcon = statusIcon[a.status] || CheckCircle2;
+          const nextStatus = a.status === "disponivel" ? "adotado" : "disponivel";
+          return (
+            <div key={a.id} className="group border rounded-xl p-4 flex items-center gap-4 bg-card hover:shadow-elegant transition-all">
+              <div className="w-16 h-16 rounded-lg bg-muted overflow-hidden shrink-0 border">
+                {a.image_url && <img src={a.image_url} alt={a.name} className="w-full h-full object-cover" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-display text-lg">{a.name}</div>
+                <div className="text-xs text-muted-foreground capitalize">{a.species} · {a.size} · {a.sex} · {a.age_years} {a.age_years === 1 ? "ano" : "anos"}</div>
+              </div>
+              <Badge
+                className={
+                  a.status === "disponivel" ? "bg-gold text-foreground border-0" :
+                  a.status === "em_processo" ? "bg-secondary text-foreground border" :
+                  "bg-muted text-muted-foreground border"
+                }
+              >
+                <StatusIcon className="h-3 w-3 mr-1" />{statusLabel[a.status] || a.status}
+              </Badge>
+              <Button size="sm" variant="outline" onClick={() => quickStatus(a, nextStatus)} title="Alternar disponibilidade">
+                {a.status === "disponivel" ? "Marcar adotado" : "Marcar disponível"}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => openEdit(a)} title="Editar"><Pencil className="h-4 w-4" /></Button>
+              <Button size="sm" variant="ghost" onClick={() => remove(a.id)} title="Excluir"><Trash2 className="h-4 w-4 text-destructive" /></Button>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-medium">{a.name}</div>
-              <div className="text-xs text-muted-foreground capitalize">{a.species} · {a.size} · {a.sex}</div>
-            </div>
-            <Badge variant={a.status === "disponivel" ? "default" : "secondary"}>{a.status}</Badge>
-            <Button size="sm" variant="ghost" onClick={() => openEdit(a)}><Pencil className="h-4 w-4" /></Button>
-            <Button size="sm" variant="ghost" onClick={() => remove(a.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-          </div>
-        ))}
+          );
+        })}
         {animals.length === 0 && <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-xl">Nenhum animal cadastrado ainda.</div>}
       </div>
-    </div>
   );
 }
 
