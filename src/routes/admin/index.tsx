@@ -282,12 +282,43 @@ function RequestsAdmin() {
     setSelected(null);
   }
 
+  const counts = {
+    total: reqs.length,
+    pendente: reqs.filter(r => r.status === "pendente").length,
+    aprovado: reqs.filter(r => r.status === "aprovado").length,
+    recusado: reqs.filter(r => r.status === "recusado").length,
+  };
+
+  const [filter, setFilter] = useState<string>("todos");
+  const visible = filter === "todos" ? reqs : reqs.filter(r => r.status === filter);
+
   return (
     <div>
-      <h2 className="font-semibold mb-4">{reqs.length} pedido(s) recebido(s)</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        {[
+          { l: "Total", v: counts.total, k: "todos", c: "text-foreground" },
+          { l: "Pendentes", v: counts.pendente, k: "pendente", c: "text-gold" },
+          { l: "Aprovados", v: counts.aprovado, k: "aprovado", c: "text-foreground/80" },
+          { l: "Recusados", v: counts.recusado, k: "recusado", c: "text-muted-foreground" },
+        ].map(s => (
+          <button
+            key={s.l}
+            onClick={() => setFilter(s.k)}
+            className={`text-left border rounded-xl p-4 bg-card transition-all hover:shadow-elegant ${filter === s.k ? "border-gold ring-1 ring-gold" : ""}`}
+          >
+            <div className={`font-display text-3xl ${s.c}`}>{s.v}</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{s.l}</div>
+          </button>
+        ))}
+      </div>
+
+      <h2 className="font-display text-xl mb-4">Pedidos {filter !== "todos" && `· ${filter}`}</h2>
       <div className="grid gap-3">
-        {reqs.map((r) => (
-          <button key={r.id} onClick={() => setSelected(r)} className="border rounded-lg p-4 flex items-center gap-4 bg-card text-left hover:bg-accent/30">
+        {visible.map((r) => (
+          <button key={r.id} onClick={() => setSelected(r)} className="border rounded-xl p-4 flex items-center gap-4 bg-card text-left hover:shadow-elegant hover:border-gold/50 transition-all">
+            <div className="h-10 w-10 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-display shrink-0">
+              {r.full_name.charAt(0).toUpperCase()}
+            </div>
             <div className="flex-1 min-w-0">
               <div className="font-medium">{r.full_name}</div>
               <div className="text-xs text-muted-foreground truncate">{r.email} · {r.phone}</div>
@@ -295,12 +326,18 @@ function RequestsAdmin() {
             <div className="text-xs text-muted-foreground hidden md:block">
               {new Date(r.created_at).toLocaleDateString("pt-BR")}
             </div>
-            <Badge variant={r.status === "pendente" ? "default" : r.status === "aprovado" ? "secondary" : "destructive"}>
+            <Badge
+              className={
+                r.status === "pendente" ? "bg-gold text-foreground border-0" :
+                r.status === "aprovado" ? "bg-foreground text-background border-0" :
+                "bg-muted text-muted-foreground border"
+              }
+            >
               {r.status}
             </Badge>
           </button>
         ))}
-        {reqs.length === 0 && <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-xl">Nenhum pedido ainda.</div>}
+        {visible.length === 0 && <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-xl">Nenhum pedido {filter !== "todos" && `${filter}`} ainda.</div>}
       </div>
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
