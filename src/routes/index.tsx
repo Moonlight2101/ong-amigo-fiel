@@ -33,9 +33,9 @@ function Index() {
           total: list.length,
           disponivel: list.filter((a) => a.status === "disponivel").length,
           adotado: list.filter((a) => a.status === "adotado").length,
-        });
-      });
-  }, []);
+            <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-primary mb-6">
+              <span className="h-px w-8 bg-gold" /> ONG de Resgate Animal
+            </span>
 
   return (
     <Layout>
@@ -69,19 +69,6 @@ function Index() {
               </Link>
             </div>
 
-            <dl className="mt-14 grid grid-cols-3 gap-6 max-w-md">
-              {[
-                { k: stats.total || "—", l: "Resgatados" },
-                { k: stats.disponivel || "—", l: "Para adoção" },
-                { k: "100%", l: "Acompanhados" },
-              ].map((s) => (
-                <div key={s.l}>
-                  <dt className="font-display text-3xl text-primary">{s.k}</dt>
-                  <dd className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{s.l}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
 
           <div className="md:col-span-5 relative animate-fade-up">
             <div className="absolute -inset-4 gradient-gold opacity-20 blur-3xl rounded-full" />
