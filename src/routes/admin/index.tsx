@@ -123,6 +123,8 @@ function AnimalsAdmin() {
     if (error) return toast.error(error.message);
     toast.success("Removido");
     load();
+  }
+
   async function quickStatus(a: Animal, status: string) {
     const { error } = await supabase.from("animals").update({ status }).eq("id", a.id);
     if (error) return toast.error(error.message);
