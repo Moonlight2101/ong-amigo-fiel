@@ -33,9 +33,9 @@ function Index() {
           total: list.length,
           disponivel: list.filter((a) => a.status === "disponivel").length,
           adotado: list.filter((a) => a.status === "adotado").length,
-            <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-primary mb-6">
-              <span className="h-px w-8 bg-gold" /> ONG de Resgate Animal
-            </span>
+        });
+      });
+  }, []);
 
   return (
     <Layout>
@@ -47,7 +47,7 @@ function Index() {
         <div className="container mx-auto px-6 py-20 md:py-32 grid md:grid-cols-12 gap-10 items-center relative">
           <div className="md:col-span-7 animate-fade-up">
             <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-primary mb-6">
-              <span className="h-px w-8 bg-gold" /> ONG de Resgate Animal · Desde 2018
+              <span className="h-px w-8 bg-gold" /> ONG de Resgate Animal
             </span>
             <h1 className="font-display text-5xl md:text-7xl leading-[1.02] tracking-tight text-balance">
               Cada resgate é o início de uma <em className="text-gold not-italic font-display">nova história</em>.
@@ -68,7 +68,7 @@ function Index() {
                 </Button>
               </Link>
             </div>
-
+          </div>
 
           <div className="md:col-span-5 relative animate-fade-up">
             <div className="absolute -inset-4 gradient-gold opacity-20 blur-3xl rounded-full" />
