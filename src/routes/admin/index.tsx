@@ -28,7 +28,7 @@ type Request = {
 };
 
 function Page() {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,14 +37,7 @@ function Page() {
 
   if (loading) return <Layout><div className="container mx-auto px-4 py-20 text-center">Carregando...</div></Layout>;
   if (!user) return null;
-  if (!isAdmin) return (
-    <Layout>
-      <div className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl font-bold">Acesso negado</h1>
-        <p className="text-muted-foreground mt-2">Sua conta não tem permissão de administrador.</p>
-      </div>
-    </Layout>
-  );
+
 
   return (
     <Layout>
