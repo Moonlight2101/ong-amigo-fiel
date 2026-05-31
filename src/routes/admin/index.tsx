@@ -204,7 +204,7 @@ function AnimalsAdmin() {
                   </Select>
                 </div>
               </div>
-              <div><Label>URL da foto</Label><Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="https://..." /></div>
+              
               <div><Label>Descrição</Label><Textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
               <Button type="submit" className="w-full">Salvar</Button>
             </form>
