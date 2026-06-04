@@ -94,6 +94,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/adotar" className="hover:text-gold transition-colors">Adotar</Link>
           </div>
         </div>
+        <div className="border-t border-border/40">
+          <div className="container mx-auto px-6 py-6 text-xs text-muted-foreground text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-2">
+            <span>Equipe de Desenvolvimento: <span className="text-foreground font-medium">Equipe Amigo Fiel Solutions</span></span>
+            <span>E-mail de Contato: <a href="mailto:suporte.amigofiel@gmail.com" className="hover:text-gold transition-colors">suporte.amigofiel@gmail.com</a></span>
+            <span>Horário de Atendimento: Segunda a Sexta-feira, das 08h às 19h.</span>
+          </div>
+        </div>
       </footer>
 
     </div>

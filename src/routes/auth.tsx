@@ -20,6 +20,7 @@ function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [forgot, setForgot] = useState(false);
 
   useEffect(() => { if (user) navigate({ to: "/admin" }); }, [user, navigate]);
 
@@ -45,6 +46,18 @@ function Page() {
     toast.success("Conta criada! Verifique seu e-mail se necessário.");
   }
 
+  async function sendReset(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setLoading(false);
+    if (error) return toast.error(error.message);
+    toast.success("Verifique seu e-mail para redefinir a senha.");
+    setForgot(false);
+  }
+
   return (
     <Layout>
       <section className="container mx-auto px-4 py-16 max-w-md">
@@ -53,27 +66,47 @@ function Page() {
           Acesso para administradores da ONG.
         </p>
 
-        <Tabs defaultValue="signin" className="mt-8">
-          <TabsList className="grid grid-cols-2 w-full">
-            <TabsTrigger value="signin">Entrar</TabsTrigger>
-            <TabsTrigger value="signup">Criar conta</TabsTrigger>
-          </TabsList>
-          <TabsContent value="signin">
-            <form onSubmit={signIn} className="space-y-4 mt-6 bg-card border rounded-xl p-6">
-              <div><Label>E-mail</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
-              <div><Label>Senha</Label><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></div>
-              <Button type="submit" className="w-full" disabled={loading}>Entrar</Button>
-            </form>
-          </TabsContent>
-          <TabsContent value="signup">
-            <form onSubmit={signUp} className="space-y-4 mt-6 bg-card border rounded-xl p-6">
-              <div><Label>E-mail</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
-              <div><Label>Senha</Label><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} /></div>
-              <Button type="submit" className="w-full" disabled={loading}>Criar conta</Button>
-              <p className="text-xs text-muted-foreground">O primeiro usuário cadastrado é automaticamente promovido a administrador.</p>
-            </form>
-          </TabsContent>
-        </Tabs>
+        {forgot ? (
+          <form onSubmit={sendReset} className="space-y-4 mt-8 bg-card border rounded-xl p-6">
+            <div>
+              <Label>E-mail</Label>
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Enviando..." : "Enviar link de recuperação"}
+            </Button>
+            <button type="button" onClick={() => setForgot(false)} className="text-sm text-muted-foreground hover:text-foreground underline w-full text-center">
+              Voltar ao login
+            </button>
+          </form>
+        ) : (
+          <Tabs defaultValue="signin" className="mt-8">
+            <TabsList className="grid grid-cols-2 w-full">
+              <TabsTrigger value="signin">Entrar</TabsTrigger>
+              <TabsTrigger value="signup">Criar conta</TabsTrigger>
+            </TabsList>
+            <TabsContent value="signin">
+              <form onSubmit={signIn} className="space-y-4 mt-6 bg-card border rounded-xl p-6">
+                <div><Label>E-mail</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
+                <div><Label>Senha</Label><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></div>
+                <Button type="submit" className="w-full" disabled={loading}>Entrar</Button>
+                <div className="text-center">
+                  <button type="button" onClick={() => setForgot(true)} className="text-sm text-muted-foreground hover:text-foreground underline">
+                    Esqueci minha senha
+                  </button>
+                </div>
+              </form>
+            </TabsContent>
+            <TabsContent value="signup">
+              <form onSubmit={signUp} className="space-y-4 mt-6 bg-card border rounded-xl p-6">
+                <div><Label>E-mail</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
+                <div><Label>Senha</Label><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} /></div>
+                <Button type="submit" className="w-full" disabled={loading}>Criar conta</Button>
+                <p className="text-xs text-muted-foreground">O primeiro usuário cadastrado é automaticamente promovido a administrador.</p>
+              </form>
+            </TabsContent>
+          </Tabs>
+        )}
       </section>
     </Layout>
   );
