@@ -46,7 +46,7 @@ export function AnimalCard({ animal }: { animal: Animal }) {
               src={animal.image_url}
               alt={animal.name}
               loading="lazy"
-              className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1200ms] ease-out ${isAdopted ? "grayscale opacity-75" : ""}`}
+              className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1200ms] ease-out`}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-muted-foreground">
