@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdotarRouteImport } from './routes/adotar'
 import { Route as IndexRouteImport } from './routes/index'
@@ -21,11 +20,6 @@ import { Route as AnimaisIdRouteImport } from './routes/animais/$id'
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -63,7 +57,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/adotar': typeof AdotarRoute
   '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/sobre': typeof SobreRoute
   '/animais/$id': typeof AnimaisIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -73,7 +66,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/adotar': typeof AdotarRoute
   '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/sobre': typeof SobreRoute
   '/animais/$id': typeof AnimaisIdRoute
   '/admin': typeof AdminIndexRoute
@@ -84,7 +76,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/adotar': typeof AdotarRoute
   '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/sobre': typeof SobreRoute
   '/animais/$id': typeof AnimaisIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -96,7 +87,6 @@ export interface FileRouteTypes {
     | '/'
     | '/adotar'
     | '/auth'
-    | '/reset-password'
     | '/sobre'
     | '/animais/$id'
     | '/admin/'
@@ -106,7 +96,6 @@ export interface FileRouteTypes {
     | '/'
     | '/adotar'
     | '/auth'
-    | '/reset-password'
     | '/sobre'
     | '/animais/$id'
     | '/admin'
@@ -116,7 +105,6 @@ export interface FileRouteTypes {
     | '/'
     | '/adotar'
     | '/auth'
-    | '/reset-password'
     | '/sobre'
     | '/animais/$id'
     | '/admin/'
@@ -127,7 +115,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdotarRoute: typeof AdotarRoute
   AuthRoute: typeof AuthRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
   SobreRoute: typeof SobreRoute
   AnimaisIdRoute: typeof AnimaisIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -141,13 +128,6 @@ declare module '@tanstack/react-router' {
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -199,7 +179,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdotarRoute: AdotarRoute,
   AuthRoute: AuthRoute,
-  ResetPasswordRoute: ResetPasswordRoute,
   SobreRoute: SobreRoute,
   AnimaisIdRoute: AnimaisIdRoute,
   AdminIndexRoute: AdminIndexRoute,

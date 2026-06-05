@@ -28,7 +28,7 @@ type Request = {
 };
 
 function Page() {
-  const { user, loading } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,6 +37,10 @@ function Page() {
 
   if (loading) return <Layout><div className="container mx-auto px-4 py-20 text-center">Carregando...</div></Layout>;
   if (!user) return null;
+  if (!isAdmin) return <Layout><div className="container mx-auto px-4 py-20 text-center">
+    <h1 className="font-display text-2xl mb-2">Acesso restrito</h1>
+    <p className="text-muted-foreground">Sua conta não possui permissão de administrador. Solicite acesso ao responsável pela ONG.</p>
+  </div></Layout>;
 
 
   return (
@@ -255,7 +259,8 @@ function RequestsAdmin() {
   const [selected, setSelected] = useState<Request | null>(null);
 
   async function load() {
-    const { data } = await supabase.from("adoption_requests").select("*").order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("adoption_requests").select("*").order("created_at", { ascending: false });
+    if (error) { toast.error("Erro ao carregar pedidos: " + error.message); return; }
     setReqs((data as Request[]) || []);
   }
   useEffect(() => { load(); }, []);
