@@ -32,11 +32,17 @@ function validate(form: {
   housing_type: string; reason: string; agree_responsibility: boolean;
 }): Errors {
   const errors: Errors = {};
-  if (!form.full_name.trim()) errors.full_name = "Informe seu nome completo.";
+  const nameTrim = form.full_name.trim();
+  if (!nameTrim) errors.full_name = "Informe seu nome completo.";
+  else if (!/^\S+(\s+\S+)+$/.test(nameTrim)) errors.full_name = "Informe o nome completo (nome e sobrenome).";
   const ageNum = Number(form.age);
   if (!form.age.trim() || !Number.isFinite(ageNum) || ageNum <= 0) errors.age = "Informe sua idade.";
+  else if (ageNum < 18) errors.age = "É necessário ter 18 anos ou mais para adotar.";
+  const emailTrim = form.email.trim();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!form.email.trim() || !emailRegex.test(form.email.trim())) errors.email = "Digite um e-mail válido.";
+  if (!emailTrim) errors.email = "Digite um e-mail válido.";
+  else if (!emailTrim.includes("@")) errors.email = "O e-mail deve conter o caractere @.";
+  else if (!emailRegex.test(emailTrim)) errors.email = "Digite um e-mail válido.";
   const phoneDigits = form.phone.replace(/\D/g, "");
   if (phoneDigits.length < 8) errors.phone = "Informe um telefone válido.";
   if (!form.address.trim()) errors.address = "Preencha o endereço completo.";
